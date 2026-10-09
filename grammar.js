@@ -854,8 +854,9 @@ module.exports = grammar({
       repeat(seq('.', $.type_identifier)),
     )),
 
+    // `Map<K, V>`, or a module-qualified one: `tasks.Task<Int>`.
     generic_type: $ => prec(2, seq(
-      $.type_identifier,
+      choice($.type_identifier, $.qualified_type),
       '<',
       commaSep1($._type),
       '>',
@@ -904,9 +905,11 @@ module.exports = grammar({
       field('type', $._type),
     ),
 
-    // Body (block) — permissive to handle blocks, maps, anonymous structs.
-    // Lambdas live in their own rule (|params| body) and no longer share `{}`.
-    body: $ => seq('{', repeat(seq(choice($._item, $.map_entry, $.anon_struct_field), optional(','))), '}'),
+    // Body (block). Lambdas live in their own rule (|params| body). A block
+    // holds no `anon_struct_field`: `{a: 1}` reaches `anon_struct` through the
+    // [body, anon_struct] conflict, and a block item that read `x:` as a field
+    // name would win over the typed binding `x: Int = 5` and fail at its `=`.
+    body: $ => seq('{', repeat(seq(choice($._item, $.map_entry), optional(','))), '}'),
 
     // A lambda's body runs to the end of its expression, a `|>` included:
     // `|s| f(s) |> g()` pipes inside the body.
@@ -1200,11 +1203,14 @@ module.exports = grammar({
       $.as_pattern,
     )),
 
-    binding: $ => prec(-1, seq(
-      $.identifier,
-      optional(seq(':', $._type)),
-      '=',
-      choice($.assertion, $._expression),
+    // The annotated form names its binding with `_field_identifier`, as an
+    // `anon_struct_field` does, so that at `x:` after a brace that may open a
+    // block or an anonymous struct (a lambda or case-arm body) the parser
+    // keeps both readings until `=` or `}` decides. With a plain `identifier`
+    // here, precedence would commit to the field at `:`.
+    binding: $ => prec(-1, choice(
+      seq($.identifier, '=', choice($.assertion, $._expression)),
+      seq($._field_identifier, ':', $._type, '=', choice($.assertion, $._expression)),
     )),
 
     defer_statement: $ => seq(
@@ -1573,7 +1579,7 @@ module.exports = grammar({
     concurrent_block: $ => seq(
       'concurrent',
       '{',
-      repeat(seq(choice($._item, $.map_entry, $.anon_struct_field), optional(','))),
+      repeat(seq(choice($._item, $.map_entry), optional(','))),
       '}',
     ),
 

@@ -3532,8 +3532,17 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "type_identifier"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "type_identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "qualified_type"
+              }
+            ]
           },
           {
             "type": "STRING",
@@ -3795,10 +3804,6 @@
                   {
                     "type": "SYMBOL",
                     "name": "map_entry"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "anon_struct_field"
                   }
                 ]
               },
@@ -5342,47 +5347,65 @@
       "type": "PREC",
       "value": -1,
       "content": {
-        "type": "SEQ",
+        "type": "CHOICE",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "identifier"
-          },
-          {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
-                "type": "SEQ",
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "STRING",
+                "value": "="
+              },
+              {
+                "type": "CHOICE",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": ":"
+                    "type": "SYMBOL",
+                    "name": "assertion"
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "_type"
+                    "name": "_expression"
                   }
                 ]
-              },
-              {
-                "type": "BLANK"
               }
             ]
           },
           {
-            "type": "STRING",
-            "value": "="
-          },
-          {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "assertion"
+                "name": "_field_identifier"
+              },
+              {
+                "type": "STRING",
+                "value": ":"
               },
               {
                 "type": "SYMBOL",
-                "name": "_expression"
+                "name": "_type"
+              },
+              {
+                "type": "STRING",
+                "value": "="
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "assertion"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_expression"
+                  }
+                ]
               }
             ]
           }
@@ -7174,10 +7197,6 @@
                   {
                     "type": "SYMBOL",
                     "name": "map_entry"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "anon_struct_field"
                   }
                 ]
               },
