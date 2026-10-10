@@ -2,7 +2,9 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 // External scanner for Nomi string content and for the tokens that depend on
 // the whitespace before them (scan_layout).
@@ -28,7 +30,8 @@
 //   RAW_STRING_CONTENT         — chars inside a backtick raw string. Stops
 //                                only at "`". Backslash is literal,
 //                                `${` is literal, `\${` keeps its `\`.
-//   CASE_ARM_SEP               — zero-width end of a `case` arm.
+//   STATEMENT_END              — zero-width end of a statement or a `case`
+//                                arm at a line break.
 //   ANON_STRUCT_OPEN, MAP_OPEN — a classified headless `{`.
 //   ATTACHED_COMMENT_TEST_PROMPT — the line-leading `//!` attached-test opener.
 //   ATTACHED_COMMENT_TEST_LINE_PROMPT — the line-leading `//!` attached-test
@@ -45,10 +48,9 @@ enum TokenType {
     STRING_CONTENT,
     TRIPLE_STRING_CONTENT,
     RAW_STRING_CONTENT,
-    // Separator between `case` arms, zero-width, at the start of a line that
-    // begins the next arm's pattern with `.Uppercase`, `[` or `-` (see
-    // scan_case_arm_sep).
-    CASE_ARM_SEP,
+    // Zero-width, at the start of a line, where the line break before it ends
+    // a statement or a `case` arm (see line_continues).
+    STATEMENT_END,
     // Opening brace of a *headless* anonymous struct literal (`{a: 1}`) or map
     // literal (`{k => v}`) in value/scrutinee position. The scanner classifies
     // a whitespace-preceded `{` by peeking its content and emits one of these
@@ -69,6 +71,14 @@ enum TokenType {
 
 typedef struct {
     bool in_attached_test_prompt_group;
+    // The last external token was a `//!` line prompt after a line break,
+    // ending at prompt_end_column. The prompt is an extra, so the whitespace
+    // before the token after it holds no line break; this carries the break
+    // over to that token, which starts where the prompt ends, so a statement
+    // on a prompt line ends as it would on a plain line. A later token on
+    // the line starts further right.
+    bool line_break_before_prompt;
+    uint32_t prompt_end_column;
 } Scanner;
 
 void *tree_sitter_nomi_external_scanner_create(void) {
@@ -83,13 +93,21 @@ void tree_sitter_nomi_external_scanner_destroy(void *payload) {
 unsigned tree_sitter_nomi_external_scanner_serialize(void *payload, char *buffer) {
     Scanner *scanner = (Scanner *)payload;
     buffer[0] = scanner != NULL && scanner->in_attached_test_prompt_group ? 1 : 0;
-    return 1;
+    buffer[1] = scanner != NULL && scanner->line_break_before_prompt ? 1 : 0;
+    uint32_t column = scanner != NULL ? scanner->prompt_end_column : 0;
+    memcpy(&buffer[2], &column, sizeof column);
+    return 2 + sizeof column;
 }
 
 void tree_sitter_nomi_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
     Scanner *scanner = (Scanner *)payload;
     if (scanner == NULL) return;
     scanner->in_attached_test_prompt_group = length > 0 && buffer[0] == 1;
+    scanner->line_break_before_prompt = length > 1 && buffer[1] == 1;
+    scanner->prompt_end_column = 0;
+    if (length >= 2 + sizeof scanner->prompt_end_column) {
+        memcpy(&scanner->prompt_end_column, &buffer[2], sizeof scanner->prompt_end_column);
+    }
 }
 
 static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -401,34 +419,44 @@ static bool scan_raw_string_content(Scanner *scanner, TSLexer *lexer) {
     return true;
 }
 
-// Scan a `case`-arm separator, at the first character after a whitespace run
-// that held a line break. The Go parser ends an arm at that line break; the
-// grammar treats it as whitespace, so a complete arm body would otherwise
-// extend into the next arm's pattern. The separator is zero-width and fires
-// only before a character that starts a pattern no body continues with:
-//   - `[`, a list pattern (`[head, ..tail]`), which a body would read as a
-//     `typed_list` (`None[head]`);
-//   - `.Uppercase`, a `dot_variant` (`.Descending`);
-//   - `-` not followed by `>`, a negative literal (`-1`), which a body would
-//     read as a subtraction.
-// A line starting with `|>`, another operator, a lowercase `.field` or
-// anything else is left alone, so a multi-line body continues.
-static bool scan_case_arm_sep(TSLexer *lexer) {
-    lexer->mark_end(lexer);
-    int32_t c = lexer->lookahead;
-    if (c == '[') {
-        lexer->result_symbol = CASE_ARM_SEP;
-        return true;
+// Whether the rest of `word` follows, its first character being the
+// lookahead, as a whole word. Advances over what matches.
+static bool at_word(TSLexer *lexer, const char *word) {
+    for (const char *p = word; *p != '\0'; p++) {
+        if (lexer->lookahead != *p) return false;
+        advance(lexer);
     }
-    if (c == '.' || c == '-') {
-        advance(lexer); // peek past it (beyond mark_end, not part of the token)
-        int32_t d = lexer->lookahead;
-        if ((c == '.' && d >= 'A' && d <= 'Z') || (c == '-' && d != '>')) {
-            lexer->result_symbol = CASE_ARM_SEP;
+    return !is_ident_char(lexer->lookahead);
+}
+
+// Whether the line that starts at the lookahead continues the statement or
+// arm before the line break, as the Go lexer and parser read it. The lexer
+// emits no NEWLINE before a line that starts with `|>`, `)` or `]`; the
+// parser steps over one before `else` (an `if`'s or a binding's) and, after a
+// declaration's signature, before its `{` body and its `where` clause. A
+// statement never starts with `}`, `,` or `{` after a complete statement
+// that a brace could extend, and the end of input ends everything anyway.
+// Every other line starts a new statement: `-1`, `(2)`, `[1]`, `.b`, `!c`.
+// May advance past the lookahead, so the caller marks the token's end first.
+static bool line_continues(TSLexer *lexer) {
+    switch (lexer->lookahead) {
+        case 0:
+        case ')':
+        case ']':
+        case '}':
+        case ',':
+        case '{':
             return true;
-        }
+        case '|':
+            advance(lexer);
+            return lexer->lookahead == '>';
+        case 'e':
+            return at_word(lexer, "else");
+        case 'w':
+            return at_word(lexer, "where");
+        default:
+            return false;
     }
-    return false;
 }
 
 // Whether `c` can start the operand of `dbg`, `try`, `return`, `break` or
@@ -505,7 +533,7 @@ static bool scan_attached_comment_marker(Scanner *scanner, TSLexer *lexer, const
 }
 
 // The tokens that depend on the whitespace before them: the `//!` prompts and
-// a group's end, the `case`-arm separator, the same-line operand marker and a
+// a group's end, the statement end, the same-line operand marker and a
 // headless brace. One pass skips the leading whitespace for all of them,
 // counting line breaks. Each check runs from the first character after it; a
 // check that advances further owns the rest of the call, since the lexer
@@ -513,6 +541,10 @@ static bool scan_attached_comment_marker(Scanner *scanner, TSLexer *lexer, const
 // which happens only at the start state or in error recovery) keeps the
 // zero-width and brace tokens out of error recovery.
 static bool scan_layout(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool recovering) {
+    // The token right after a `//!` line prompt starts the prompt's line.
+    bool line_break = scanner != NULL && scanner->line_break_before_prompt &&
+        lexer->get_column(lexer) == scanner->prompt_end_column;
+    if (scanner != NULL) scanner->line_break_before_prompt = false;
     unsigned newlines = 0;
     bool spaced = false;
     while (is_ws(lexer->lookahead)) {
@@ -520,10 +552,17 @@ static bool scan_layout(Scanner *scanner, TSLexer *lexer, const bool *valid_symb
         spaced = true;
         skip(lexer);
     }
+    if (newlines > 0) line_break = true;
 
     if (lexer->lookahead == '/') {
         // A `//!` prompt, or a comment. Nothing else here starts with `/`.
-        return scan_attached_comment_marker(scanner, lexer, valid_symbols, newlines);
+        if (!scan_attached_comment_marker(scanner, lexer, valid_symbols, newlines)) return false;
+        if (scanner != NULL && newlines > 0 &&
+            lexer->result_symbol == ATTACHED_COMMENT_TEST_LINE_PROMPT) {
+            scanner->line_break_before_prompt = true;
+            scanner->prompt_end_column = lexer->get_column(lexer);
+        }
+        return true;
     }
 
     if (valid_symbols[ATTACHED_TEST_PROMPT_GROUP_END] &&
@@ -536,15 +575,20 @@ static bool scan_layout(Scanner *scanner, TSLexer *lexer, const bool *valid_symb
     }
     if (recovering) return false;
 
-    if (valid_symbols[CASE_ARM_SEP] && newlines > 0) {
-        if (scan_case_arm_sep(lexer)) return true;
-        if (lexer->lookahead == '.' || lexer->lookahead == '-') return false;
+    // A line break ends the statement or arm in progress, as the Go lexer
+    // ends one, unless the next line continues it. A brace is left to the
+    // headless-brace check below.
+    if (valid_symbols[STATEMENT_END] && line_break && lexer->lookahead != '{') {
+        lexer->mark_end(lexer);
+        if (line_continues(lexer)) return false;
+        lexer->result_symbol = STATEMENT_END;
+        return true;
     }
 
     // The operand of `dbg`, `try`, `return`, `break` and `todo` must start on
     // the keyword's line, as in the Go parser: `n |> dbg` then a line
     // `same = dbg n` is two statements.
-    if (valid_symbols[SAME_LINE] && newlines == 0) {
+    if (valid_symbols[SAME_LINE] && !line_break) {
         lexer->mark_end(lexer);
         if (!starts_operand(lexer)) return false;
         lexer->result_symbol = SAME_LINE;
