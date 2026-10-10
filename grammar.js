@@ -1563,14 +1563,16 @@ module.exports = grammar({
       ']',
     ),
 
-    // A bare `..` first or last (`#[.., x]`, `#[x, ..]`) is the vector
-    // already at the field or key the literal is written at. A vector takes
-    // no named spread; the Go parser refuses one, and its position rule.
+    // A vector takes one spread, first or last: `#[..v, x]`, `#[x, ..v]`,
+    // or a bare `..` (`#[.., x]`, `#[x, ..]`), the vector already at the
+    // field or key the literal is written at. As for a list, the grammar
+    // admits a spread at any element; the Go parser holds it to one, at
+    // either end.
     vector: $ => seq(
       '#[',
       optional(seq(
-        choice('..', $._expression),
-        repeat(seq(',', choice('..', $._expression))),
+        choice(seq('..', $._expression), '..', $._expression),
+        repeat(seq(',', choice(seq('..', $._expression), '..', $._expression))),
         optional(','),
       )),
       ']',

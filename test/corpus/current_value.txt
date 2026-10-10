@@ -94,6 +94,34 @@ once a = {..log, recent: #[.., e], first: #[e, ..]}
           (identifier))))))
 
 ================================================================================
+Named spread at either end of a vector
+================================================================================
+
+once a = #[..names, "Noah"]
+
+once b = #["Noah", ..Team.names(t)]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (once_binding
+    name: (identifier)
+    value: (vector
+      (identifier)
+      (string
+        (string_content))))
+  (once_binding
+    name: (identifier)
+    value: (vector
+      (string
+        (string_content))
+      (call_expression
+        function: (field_access
+          (type_identifier)
+          (identifier))
+        (identifier)))))
+
+================================================================================
 Set update with a named base
 ================================================================================
 
