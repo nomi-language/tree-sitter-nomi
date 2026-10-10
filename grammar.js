@@ -1077,7 +1077,10 @@ module.exports = grammar({
     // which calls `parseExpr(1)` after the `..` exactly as the list spread does
     // — so `{..config, tag: "x"}`, `{..f(x), a: 1}` and `{..a.b, c: 2}` all
     // parse here and the checker, not the grammar, decides what is a struct.
-    struct_update_spread: $ => seq('..', field('head', $._expression)),
+    // A `..` with no head (`{.., city: "NYC"}`) is the bare spread: the value
+    // already at the field or key the literal is written at. The token after
+    // it, a `,` or the closing `}`, decides it.
+    struct_update_spread: $ => prec.right(seq('..', optional(field('head', $._expression)))),
 
     // Map update by spread: `{..base, k => v}` means `Map.merge(base, {k => v})`.
     // The same position rule as the struct update: one spread, first, and at
@@ -1092,7 +1095,7 @@ module.exports = grammar({
       '}',
     )),
 
-    map_update_spread: $ => seq('..', field('head', $._expression)),
+    map_update_spread: $ => prec.right(seq('..', optional(field('head', $._expression)))),
 
     // A field in an update. Shaped like `struct_construction`'s field rather
     // than reusing `anon_struct_field`, because an update's field may be punned:
@@ -1548,35 +1551,44 @@ module.exports = grammar({
 
     boolean: $ => choice('true', 'false'),
 
+    // A `..` with no tail (`[t, ..]`) is the bare spread: the list already at
+    // the field or key the literal is written at.
     list: $ => seq(
       '[',
       optional(seq(
-        choice(seq('..', $._expression), $._expression),
-        repeat(seq(',', choice(seq('..', $._expression), $._expression))),
+        choice(seq('..', $._expression), '..', $._expression),
+        repeat(seq(',', choice(seq('..', $._expression), '..', $._expression))),
         optional(','),
       )),
       ']',
     ),
 
+    // A bare `..` first or last (`#[.., x]`, `#[x, ..]`) is the vector
+    // already at the field or key the literal is written at. A vector takes
+    // no named spread; the Go parser refuses one, and its position rule.
     vector: $ => seq(
       '#[',
       optional(seq(
-        $._expression,
-        repeat(seq(',', $._expression)),
+        choice('..', $._expression),
+        repeat(seq(',', choice('..', $._expression))),
         optional(','),
       )),
       ']',
     ),
 
+    // A set update, `#{..base, x}` or the bare `#{.., x}`, takes its spread
+    // first, as a map update does.
     set: $ => seq(
       '#{',
       optional(seq(
-        $._expression,
+        choice($.set_spread, $._expression),
         repeat(seq(',', $._expression)),
         optional(','),
       )),
       '}',
     ),
+
+    set_spread: $ => prec.right(seq('..', optional(field('head', $._expression)))),
 
     paren_expression: $ => seq('(', $._expression, ')'),
 
