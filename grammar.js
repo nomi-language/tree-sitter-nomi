@@ -86,6 +86,11 @@ module.exports = grammar({
     // literal wins.
     [$.body, $.struct_update],
     [$.body, $.map_literal],
+    // `{..m, "b" => 2}` through a plain `{` (`f({..m, "b" => 2})`) shares
+    // its `{ ..head` prefix with the struct update; the `=>` after the head
+    // decides.
+    [$.body, $.map_update],
+    [$.struct_update_spread, $.map_update_spread],
     [$.module_path],
     [$.lambda_parameter, $._expression],
     // A single `_import_body` covers all import shapes (bare module, single
@@ -998,6 +1003,7 @@ module.exports = grammar({
       $.anon_struct,
       $.struct_update,
       $.map_literal,
+      $.map_update,
       $.typed_list,
       $.call_expression,
       $.field_access,
@@ -1072,6 +1078,21 @@ module.exports = grammar({
     // — so `{..config, tag: "x"}`, `{..f(x), a: 1}` and `{..a.b, c: 2}` all
     // parse here and the checker, not the grammar, decides what is a struct.
     struct_update_spread: $ => seq('..', field('head', $._expression)),
+
+    // Map update by spread: `{..base, k => v}` means `Map.merge(base, {k => v})`.
+    // The same position rule as the struct update: one spread, first, and at
+    // least one entry after it (`{..m}` is the struct form, which the checker
+    // refuses for a map base). The scanner classifies the brace by its
+    // top-level `=>`, so the update arrives with `_map_open`.
+    map_update: $ => prec(6, seq(
+      choice('{', $._map_open),
+      $.map_update_spread,
+      repeat1(seq(optional(','), $.map_entry)),
+      optional(','),
+      '}',
+    )),
+
+    map_update_spread: $ => seq('..', field('head', $._expression)),
 
     // A field in an update. Shaped like `struct_construction`'s field rather
     // than reusing `anon_struct_field`, because an update's field may be punned:
@@ -1332,6 +1353,7 @@ module.exports = grammar({
       $.anon_struct,
       $.struct_update,
       $.map_literal,
+      $.map_update,
       $.typed_list,
       $.call_expression,
       $.field_access,
@@ -1378,6 +1400,7 @@ module.exports = grammar({
       $.anon_struct,
       $.struct_update,
       $.map_literal,
+      $.map_update,
       $.typed_list,
       $.call_expression,
       $.lambda,

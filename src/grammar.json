@@ -4299,6 +4299,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "map_update"
+        },
+        {
+          "type": "SYMBOL",
           "name": "typed_list"
         },
         {
@@ -4673,6 +4677,89 @@
       }
     },
     "struct_update_spread": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ".."
+        },
+        {
+          "type": "FIELD",
+          "name": "head",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
+        }
+      ]
+    },
+    "map_update": {
+      "type": "PREC",
+      "value": 6,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "{"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_map_open"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "map_update_spread"
+          },
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "map_entry"
+                }
+              ]
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "STRING",
+            "value": "}"
+          }
+        ]
+      }
+    },
+    "map_update_spread": {
       "type": "SEQ",
       "members": [
         {
@@ -6149,6 +6236,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "map_update"
+        },
+        {
+          "type": "SYMBOL",
           "name": "typed_list"
         },
         {
@@ -6319,6 +6410,10 @@
         {
           "type": "SYMBOL",
           "name": "map_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "map_update"
         },
         {
           "type": "SYMBOL",
@@ -10518,6 +10613,14 @@
     [
       "body",
       "map_literal"
+    ],
+    [
+      "body",
+      "map_update"
+    ],
+    [
+      "struct_update_spread",
+      "map_update_spread"
     ],
     [
       "module_path"

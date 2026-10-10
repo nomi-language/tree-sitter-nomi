@@ -115,6 +115,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -392,6 +396,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -725,6 +733,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -965,6 +977,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -1192,6 +1208,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -1392,6 +1412,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -1666,6 +1690,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "once_binding",
           "named": true
         },
@@ -1894,6 +1922,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -2079,6 +2111,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -2354,6 +2390,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -2557,6 +2597,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -2748,6 +2792,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -2928,6 +2976,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -3210,6 +3262,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "once_binding",
           "named": true
         },
@@ -3430,6 +3486,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -3703,6 +3763,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -3926,6 +3990,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -4193,6 +4261,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -4373,6 +4445,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -4591,6 +4667,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -4843,6 +4923,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -5358,6 +5442,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -5626,6 +5714,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -6074,6 +6166,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -6262,6 +6358,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -6527,6 +6627,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -7171,6 +7275,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -7377,6 +7485,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -7560,6 +7672,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -7740,6 +7856,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -7961,6 +8081,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -8157,6 +8281,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -8441,6 +8569,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -8540,6 +8672,217 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "map_update",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "map_entry",
+          "named": true
+        },
+        {
+          "type": "map_update_spread",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "map_update_spread",
+    "named": true,
+    "fields": {
+      "head": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "anon_struct",
+            "named": true
+          },
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "body",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "break_statement",
+            "named": true
+          },
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "case_expression",
+            "named": true
+          },
+          {
+            "type": "codepoint",
+            "named": true
+          },
+          {
+            "type": "concurrent_block",
+            "named": true
+          },
+          {
+            "type": "continue_statement",
+            "named": true
+          },
+          {
+            "type": "dbg_expression",
+            "named": true
+          },
+          {
+            "type": "decimal",
+            "named": true
+          },
+          {
+            "type": "dot_variant",
+            "named": true
+          },
+          {
+            "type": "field_access",
+            "named": true
+          },
+          {
+            "type": "field_accessor",
+            "named": true
+          },
+          {
+            "type": "float",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "if_expression",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          },
+          {
+            "type": "lambda",
+            "named": true
+          },
+          {
+            "type": "list",
+            "named": true
+          },
+          {
+            "type": "map_construction",
+            "named": true
+          },
+          {
+            "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
+            "named": true
+          },
+          {
+            "type": "paren_expression",
+            "named": true
+          },
+          {
+            "type": "pipe_expression",
+            "named": true
+          },
+          {
+            "type": "range_expression",
+            "named": true
+          },
+          {
+            "type": "raw_string",
+            "named": true
+          },
+          {
+            "type": "raw_tagged_string",
+            "named": true
+          },
+          {
+            "type": "return_statement",
+            "named": true
+          },
+          {
+            "type": "set",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "struct_construction",
+            "named": true
+          },
+          {
+            "type": "struct_update",
+            "named": true
+          },
+          {
+            "type": "tagged_type_string",
+            "named": true
+          },
+          {
+            "type": "tagged_type_triple_string",
+            "named": true
+          },
+          {
+            "type": "todo_expression",
+            "named": true
+          },
+          {
+            "type": "triple_string",
+            "named": true
+          },
+          {
+            "type": "try_expression",
+            "named": true
+          },
+          {
+            "type": "tuple_expression",
+            "named": true
+          },
+          {
+            "type": "type_field_access",
+            "named": true
+          },
+          {
+            "type": "type_identifier",
+            "named": true
+          },
+          {
+            "type": "typed_list",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "vector",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -8715,6 +9058,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -8959,6 +9306,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -9173,6 +9524,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -9364,6 +9719,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -9543,6 +9902,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -9745,6 +10108,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -10022,6 +10389,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -10274,6 +10645,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -10502,6 +10877,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -10694,6 +11073,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -10878,6 +11261,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -11137,6 +11524,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "once_binding",
           "named": true
         },
@@ -11387,6 +11778,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -11613,6 +12008,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -11853,6 +12252,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -12082,6 +12485,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -12266,6 +12673,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
@@ -12705,6 +13116,10 @@
             "named": true
           },
           {
+            "type": "map_update",
+            "named": true
+          },
+          {
             "type": "paren_expression",
             "named": true
           },
@@ -12890,6 +13305,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -13335,6 +13754,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -13595,6 +14018,10 @@
           "named": true
         },
         {
+          "type": "map_update",
+          "named": true
+        },
+        {
           "type": "paren_expression",
           "named": true
         },
@@ -13779,6 +14206,10 @@
         },
         {
           "type": "map_literal",
+          "named": true
+        },
+        {
+          "type": "map_update",
           "named": true
         },
         {
@@ -14041,6 +14472,10 @@
           },
           {
             "type": "map_literal",
+            "named": true
+          },
+          {
+            "type": "map_update",
             "named": true
           },
           {
