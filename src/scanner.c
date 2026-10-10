@@ -143,8 +143,8 @@ static void skip_ws_comments(TSLexer *lexer) {
 //     `..` inside a literal is unambiguously a spread — so this steals nothing.
 //   - A top-level `=>` (before any decisive binding `=`) → map (`{k => v}`,
 //     `{(1,2) => "a"}`). Checked by the scan loop below, so it still wins over a
-//     leading `..`: `{..m, "b" => 2}` classifies as a map and fails at
-//     `map_entry`, which keeps map spread unsupported as designed.
+//     leading `..`: `{..m, "b" => 2}` classifies as a map, the grammar's
+//     `map_update`.
 //   - Anything else (bare statements, `foo()`, guard `n < 0 -> …`) → block.
 // Depth-tracked across `()[]{}`; strings skipped; comparison `=` (`==`/`!=`/
 // `<=`/`>=`/`=>`) never mistaken for a binding.
