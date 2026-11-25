@@ -1,8 +1,8 @@
 ================================================================================
-Refinement over a scalar with a lambda rule
+Subtype over a scalar with a lambda rule
 ================================================================================
 
-pub refine Port Int when fn port -> port >= 1
+pub subtype Port Int when fn port -> port >= 1
 
 --------------------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ pub refine Port Int when fn port -> port >= 1
     name: (qualified_type_identifier
       (type_identifier))
     (type_identifier)
-    (refinement_rule
+    (when_rule
       rule: (lambda
         (lambda_parameter
           name: (identifier))
@@ -21,10 +21,10 @@ pub refine Port Int when fn port -> port >= 1
           (integer))))))
 
 ================================================================================
-Refinement with a named function as its rule
+Subtype with a named function as its rule
 ================================================================================
 
-refine Username String when is_username
+subtype Username String when is_username
 
 --------------------------------------------------------------------------------
 
@@ -33,11 +33,11 @@ refine Username String when is_username
     name: (qualified_type_identifier
       (type_identifier))
     (type_identifier)
-    (refinement_rule
+    (when_rule
       rule: (identifier))))
 
 ================================================================================
-Struct refinement as the body's last item
+Validated struct as the body's last item
 ================================================================================
 
 struct Span
@@ -59,7 +59,7 @@ end
       (field_definition
         name: (identifier)
         type: (type_identifier))
-      (refinement_rule
+      (when_rule
         rule: (lambda
           (lambda_parameter
             name: (identifier))
@@ -72,7 +72,7 @@ end
               (identifier))))))))
 
 ================================================================================
-Struct refinement over several lines
+Validated struct over several lines
 ================================================================================
 
 struct Span
@@ -96,7 +96,7 @@ end
       (field_definition
         name: (identifier)
         type: (type_identifier))
-      (refinement_rule
+      (when_rule
         rule: (lambda
           (lambda_parameter
             name: (identifier))
@@ -110,10 +110,10 @@ end
                 (identifier)))))))))
 
 ================================================================================
-Refinement of several parents
+Subtype of several parents
 ================================================================================
 
-pub refine PositiveInt NonNegativeInt and NonZeroInt when fn n -> n > 0
+pub subtype PositiveInt NonNegativeInt and NonZeroInt when fn n -> n > 0
 
 --------------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ pub refine PositiveInt NonNegativeInt and NonZeroInt when fn n -> n > 0
       (type_identifier))
     (type_identifier)
     (type_identifier)
-    (refinement_rule
+    (when_rule
       rule: (lambda
         (lambda_parameter
           name: (identifier))
@@ -133,10 +133,10 @@ pub refine PositiveInt NonNegativeInt and NonZeroInt when fn n -> n > 0
           (integer))))))
 
 ================================================================================
-Generic refinement with a bound
+Generic subtype with a bound
 ================================================================================
 
-refine Sorted<T> List<T> where T: Comparable when fn xs -> True
+subtype Sorted<T> List<T> where T: Comparable when fn xs -> True
 
 --------------------------------------------------------------------------------
 
@@ -156,17 +156,17 @@ refine Sorted<T> List<T> where T: Comparable when fn xs -> True
         name: (type_parameter_identifier
           (type_identifier))
         (type_identifier)))
-    (refinement_rule
+    (when_rule
       rule: (lambda
         (lambda_parameter
           name: (identifier))
         body: (type_identifier)))))
 
 ================================================================================
-Refinement of an intersection with no rule of its own
+Subtype of an intersection with no rule of its own
 ================================================================================
 
-refine PositiveInt NonNegativeInt and NonZeroInt
+subtype PositiveInt NonNegativeInt and NonZeroInt
 
 --------------------------------------------------------------------------------
 
@@ -190,11 +190,11 @@ type Email String when is_email
     (qualified_type_identifier
       (type_identifier))
     (type_identifier)
-    (refinement_rule
+    (when_rule
       (identifier))))
 
 ================================================================================
-Intersection of refinements as a parameter type
+Intersection of subtypes as a parameter type
 ================================================================================
 
 fn half(n: NonNegativeInt and NonZeroInt) -> Int
